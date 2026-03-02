@@ -1,0 +1,10 @@
+{
+  "name": "always-shipping",
+  "version": "1.0.0",
+  "description": "Accountability bot for developers who care about their streak. Sends you guilt trips when you stop shipping.",
+  "type": "module",
+  "bin": { "always-shipping": "./index.js" },
+  "keywords": ["github", "productivity", "accountability", "telegram", "streak", "cli"],
+  "license": "MIT",
+  "engines": { "node": ">=18" }
+}
