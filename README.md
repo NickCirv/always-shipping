@@ -1,3 +1,5 @@
+![Banner](banner.svg)
+
 # always-shipping 🚢
 
 Your side project misses you.
