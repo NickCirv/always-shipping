@@ -5,6 +5,7 @@
   "type": "module",
   "bin": { "always-shipping": "./index.js" },
   "keywords": ["github", "productivity", "accountability", "telegram", "streak", "cli"],
+  "scripts": { "test": "node --test" },
   "license": "MIT",
   "engines": { "node": ">=18" }
 }
