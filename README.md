@@ -1,153 +1,64 @@
-![Banner](banner.svg)
+<div align="center">
 
-# always-shipping 🚢
+# always-shipping
 
-Your side project misses you.
+**Accountability bot that guilt-trips you every evening you don't commit**
 
-Set it up once. Get guilt-tripped every evening you don't commit.
-Track your streak. Never let it die.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?labelColor=0B0A09)](LICENSE)
+[![Node: >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen?labelColor=0B0A09)](https://nodejs.org)
 
----
+</div>
 
 ## Install
 
 ```bash
-# Clone and link globally
-git clone https://github.com/NickCirv/always-shipping.git
-cd always-shipping
-chmod +x index.js
-npm link
-
-# Or run directly
-node index.js setup
+npx github:NickCirv/always-shipping setup
 ```
 
-**Requires Node.js 18+**
+No global install required. Config is saved to `~/.always-shipping.json`.
 
----
-
-## Setup (30 seconds)
+## Usage
 
 ```bash
-always-shipping setup
+# Interactive setup — GitHub username, Telegram bot, check hour
+npx github:NickCirv/always-shipping setup
+
+# Run the daily check (wire this into cron)
+npx github:NickCirv/always-shipping check
+
+# View streak stats without sending messages
+npx github:NickCirv/always-shipping streak
 ```
 
-You'll be asked for:
-- Your GitHub username
-- Telegram bot token + chat ID (optional but recommended)
-- What hour to check (default: 8pm)
-- Local repo paths to scan (optional)
+| Flag | Description |
+|------|-------------|
+| `--github USERNAME` | GitHub username to check |
+| `--telegram BOT_TOKEN:CHAT_ID` | Telegram delivery (overrides config) |
+| `--hour N` | Hour to run the check, 0–23 (default: 20) |
 
-Config is saved to `~/.always-shipping.json`.
+## What it does
 
----
+Set it up once, add it to cron, and it checks your GitHub Events API (plus local git repos) every evening. If you shipped something, you get a streak message. If you didn't, the guilt trip escalates based on how long the streak you just broke was and how many days in a row you've gone quiet.
 
-## Cron Setup
+Messages scale: a broken 3-day streak gets a nudge. A broken 14-day streak gets something worse. The no-ship-day counter tracks how long you've been silent and keeps piling on.
 
-Add to your crontab (`crontab -e`):
+Streak data (current, longest, last 90 days) is stored locally in `~/.always-shipping.json`.
+
+## Cron setup
+
+Add to crontab (`crontab -e`) — the `setup` command prints the exact line:
 
 ```
-# Check every day at 8pm
 0 20 * * * node /path/to/always-shipping/index.js check
 ```
 
-Or use the exact command printed at the end of `setup`.
+## Telegram setup
+
+1. Message [@BotFather](https://t.me/botfather) → `/newbot` → copy the token
+2. Message your bot once to open a chat
+3. Visit `https://api.telegram.org/bot<TOKEN>/getUpdates` after sending a message to get your chat ID
+4. Pass as `BOT_TOKEN:CHAT_ID` during setup or with `--telegram`
 
 ---
 
-## Telegram Setup
-
-1. Message [@BotFather](https://t.me/botfather) on Telegram
-2. Create a new bot: `/newbot`
-3. Copy the bot token (looks like `123456:ABC-DEF1234...`)
-4. Message your bot once to start a chat
-5. Get your chat ID: visit `https://api.telegram.org/bot<TOKEN>/getUpdates` after sending a message
-6. Pass it as `BOT_TOKEN:CHAT_ID` during setup or with `--telegram`
-
----
-
-## Commands
-
-```bash
-# Interactive setup wizard
-always-shipping setup
-
-# Run the check (sends message if configured)
-always-shipping check
-
-# Check with CLI args (overrides config)
-always-shipping check --github octocat --telegram 123456:789 --hour 21
-
-# View streak stats (no messages sent)
-always-shipping streak
-always-shipping streak --github octocat
-```
-
----
-
-## Streak Tracking
-
-Your streak data lives in `~/.always-shipping.json`:
-
-```json
-{
-  "github": "octocat",
-  "telegram": "token:chatid",
-  "current_streak": 7,
-  "longest_streak": 12,
-  "last_ship_date": "2026-03-02",
-  "no_ship_days": 0,
-  "check_hour": 20,
-  "history": []
-}
-```
-
-The tool tracks:
-- **Current streak** — consecutive days with at least one commit
-- **Longest streak** — your personal best
-- **No-ship days** — how many days you've gone without committing (guilt multiplier)
-- **History** — last 90 days of ship/no-ship records
-
----
-
-## How It Detects Commits
-
-1. GitHub Events API — checks `PushEvent`, `CreateEvent`, `PullRequestEvent`, `ReleaseEvent` for today
-2. Local git repos — scans configured paths (or common defaults like `~/Desktop`, `~/dev`) for commits since midnight
-
-If either source finds a commit, you shipped. Streak continues.
-
----
-
-## The Messages
-
-**When you ship:**
-- "Shipped. Day 7. Keep going."
-- "Commit detected at 20:14. Streak alive: 12 days. 🔥"
-- "Another one. 21 days straight. You're the consistency guy now."
-
-**When you don't:**
-- "0 commits today. That project isn't going to ship itself."
-- "You had a 9-day streak. Had. Past tense. Now you have: zero."
-- "14 DAYS. Gone. I hope whatever you did instead was worth it."
-- "Day 3 without a commit. Are you okay? Blink twice if you need help."
-
-Messages escalate based on the streak you broke and how many days you've gone without committing.
-
----
-
-## Why
-
-Most productivity tools reward you when you do the work. This one punishes you when you don't.
-
-Shipping consistently is the single biggest predictor of whether a side project survives. Not talent. Not the idea. Not the tech stack. Consistency.
-
-One commit a day keeps the momentum alive. It doesn't have to be big. It just has to exist.
-
-Set this up, add it to cron, and let it hold you accountable.
-
----
-
-## License
-
-MIT
+<sub>Zero dependencies · Node >=18 · MIT · by <a href="https://github.com/NickCirv">NickCirv</a></sub>
